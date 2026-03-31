@@ -177,7 +177,19 @@ int main() {
 
 ## 效能分析
 
+MinHeap
+| 操作 | 時間複雜度 |
+|------|--------------|
+| IsEmpty() | O(1) |
+| Top() | O(1) |
+| Push() | O(log n) |
+| Pop() | O(log n) |
 
+BST
+| 操作 | 時間複雜度 |
+|------|--------------|
+| insert() | O(\log n) |
+| deleteNode | O(\log n) |
 
 ---
 
