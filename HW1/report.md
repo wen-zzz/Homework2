@@ -189,7 +189,7 @@ BST
 | 操作 | 時間複雜度 |
 |------|--------------|
 | insert() | O(\log n) |
-| deleteNode | O(\log n) |
+| deleteNode() | O(\log n) |
 
 ---
 
