@@ -219,7 +219,10 @@ n       Height  log2(n) Ratio (Height/log2n)
 
 
 ## 結論
+(MinPQ)本實作成功利用 陣列結構 建立最小堆積，並完成 MinPQ 的所有操作。
+透過 上浮（heapify-up）與下沉（heapify-down），確保每次插入與刪除後仍維持 Heap 性質。
 
+(BST)實驗證實隨機插入的 BST 高度與 $\log_2 n$ 呈線性比例，比值穩定在 2.5 至 3 之間，符合 $O(\log n)$ 的平均時間複雜度。
 ---
 
 ## 申論及開發報告
