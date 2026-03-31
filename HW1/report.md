@@ -219,6 +219,7 @@ n       Height  log2(n) Ratio (Height/log2n)
 因MinPQ只有把類別寫出來，所以無法編譯
 
 $ g++ BinarySearchTree.cpp -std=c++17 -o BinarySearchTree
+
 $ ./BinarySearchTree
 
 ## 結論
