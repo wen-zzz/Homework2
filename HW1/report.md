@@ -216,7 +216,9 @@ n       Height  log2(n) Ratio (Height/log2n)
 ```
 ### 編譯與執行指令
 
-
+~因MinPQ只有把類別寫出來，所以無法編譯~
+$ g++ BinarySearchTree.cpp -std=c++17 -o BinarySearchTree
+$ ./BinarySearchTree
 
 ## 結論
 (MinPQ)本實作成功利用 陣列結構 建立最小堆積，並完成 MinPQ 的所有操作。
