@@ -15,12 +15,162 @@
 
 ## 解題策略
 
+(A)抽象類別 MinPQ
+定義優先佇列應具備的基本操作：
+  IsEmpty()：判斷是否為空
+  Top()：取得最小值
+  Push()：插入元素
+  Pop()：刪除最小值
+使用 陣列（array） 來表示完全二元樹
+根節點存放最小值
+(B)使用遞迴方式走訪樹的左右子樹，取其最大深度。公式為 $Height = 1 + \max(left\_height, right\_height)$。
+隨機性確保：利用 C++11 的 <random> 庫（mt19937）產生均勻分布的隨機數，避免傳統 rand() 隨機性不足的問題。
 
+(C)針對最複雜的「雙子節點」刪除，選擇以右子樹的最小節點（In-order Successor）取代當前節點，以維持 BST 的特性。
 
 ## 程式實作
 
+MinHeap 實作
 ```cpp
+#include <iostream>
+using namespace std;
+template<class T>
+class MinPQ {
+public:
+    virtual bool IsEmpty() const = 0;
+    virtual const T& Top() const = 0;
+    virtual void Push(const T&) = 0;
+    virtual void Pop() = 0;
+};
+template<class T>
+class MinHeap : public MinPQ<T> {
+private:
+    T h[10];
+    int n;
+public:
+    MinHeap() { n = 0; }
+    bool IsEmpty() const { return n == 0; }
+    const T& Top() const { return h[1]; }
+    void Push(const T& x) {
+        int i = ++n;
+        while (i > 1 && x < h[i / 2]) {
+            h[i] = h[i / 2];
+            i /= 2;
+        }
+        h[i] = x;
+    }
+    void Pop() {
+        T last = h[n--];
+        int i = 1, child;
 
+        while (i * 2 <= n) {
+            child = i * 2;
+            if (child < n && h[child + 1] < h[child])
+                child++;
+
+            if (last <= h[child]) break;
+
+            h[i] = h[child];
+            i = child;
+        }
+        h[i] = last;
+    }
+};
+```
+BST
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <random>
+#include <cmath>
+#include <iomanip>
+
+using namespace std;
+
+struct Node {
+    int key;
+    Node* left, * right;
+    Node(int k) : key(k), left(nullptr), right(nullptr) {}
+};
+
+Node* insert(Node* root, int key) {
+    if (root == nullptr) return new Node(key);
+    if (key < root->key)
+        root->left = insert(root->left, key);
+    else if (key > root->key)
+        root->right = insert(root->right, key);
+    return root;
+}
+
+int getHeight(Node* root) {
+    if (root == nullptr) return -1;
+    return 1 + max(getHeight(root->left), getHeight(root->right));
+}
+
+Node* minValueNode(Node* node) {
+    Node* current = node;
+    while (current && current->left != nullptr)
+        current = current->left;
+    return current;
+}
+
+Node* deleteNode(Node* root, int k) {
+    if (root == nullptr) return root;
+
+    if (k < root->key)
+        root->left = deleteNode(root->left, k);
+    else if (k > root->key)
+        root->right = deleteNode(root->right, k);
+    else {
+        if (root->left == nullptr) {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        }
+        else if (root->right == nullptr) {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+        Node* temp = minValueNode(root->right);
+        root->key = temp->key;
+        root->right = deleteNode(root->right, temp->key);
+    }
+    return root;
+}
+
+void deleteTree(Node* root) {
+    if (root == nullptr) return;
+    deleteTree(root->left);
+    deleteTree(root->right);
+    delete root;
+}
+
+int main() {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(1, 1000000);
+
+    vector<int> n_values = { 100, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 };
+
+    cout << fixed << setprecision(4);
+    cout << "n\tHeight\tlog2(n)\tRatio (Height/log2n)" << endl;
+    cout << "--------------------------------------------" << endl;
+
+    for (int n : n_values) {
+        Node* root = nullptr;
+        for (int i = 0; i < n; ++i) {
+            root = insert(root, dis(gen));
+        }
+        int height = getHeight(root);
+        double log2n = log2(n);
+        double ratio = height / log2n;
+        cout << n << "\t" << height << "\t" << log2n << "\t" << ratio << endl;
+        deleteTree(root);
+    }
+    return 0;
+}
 ```
 
 ---
